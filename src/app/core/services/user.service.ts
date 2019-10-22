@@ -1,21 +1,55 @@
 import { Injectable } from '@angular/core';
-import { UserData } from '@shared/models/user-data.model';
+
 import * as firebase from 'firebase';
-import { AngularFireDatabase } from '@angular/fire/database';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { take, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { UserData } from '@shared/models/user-data.model';
 
 
 @Injectable()
 export class UserService {
 
-  private userData: UserData = new UserData();
-  private user: firebase.User = null;
+  private userData: UserData = null;
+  private authUser: firebase.User = null;
 
+  constructor(private db: AngularFirestore) {
 
-  constructor(private db: AngularFireDatabase) {
   }
 
   public setUser(user: firebase.User) {
-    this.user = user;
+    this.authUser = user;
   }
 
+  public getUserInfo(): Observable<firebase.firestore.DocumentSnapshot> {
+    const collection = this.db.collection('users');
+
+    return collection
+      .doc(this.authUser.uid)
+      .get()
+      .pipe(
+        take(1),
+        tap((response) => this.userData = new UserData(response.data()))
+      );
+  }
+
+  public setUserInfo(): Observable<void> {
+    const collection = this.db.collection('users');
+
+    return new Observable(subscriber => {
+      collection
+        .doc(this.authUser.uid)
+        .set({ ...this.userData })
+        .then(response => subscriber.next(response))
+        .catch(error => subscriber.error(error));
+    });
+  }
+
+  get UserData(): UserData {
+    return this.userData;
+  }
+
+  get AuthUser(): firebase.User {
+    return this.authUser;
+  }
 }
