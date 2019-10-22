@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { UserService } from './user.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { AngularFireDatabase } from '@angular/fire/database';
 import AuthProvider = firebase.auth.AuthProvider;
 import * as firebase from 'firebase';
 import { Observable } from 'rxjs';
@@ -13,15 +12,14 @@ export class AuthService {
   public authState: firebase.User = null;
 
   constructor(private user: UserService,
-              private afAuth: AngularFireAuth,
-              private router: Router,
-              private db: AngularFireDatabase) {
+              private afAuth: AngularFireAuth) {
     this.authStateWatcher();
   }
 
   private authStateWatcher(): void {
-    this.afAuth.authState.subscribe((auth) => {
-      this.authState = auth;
+    this.afAuth.authState.subscribe((authState) => {
+      this.authState = authState;
+      this.user.setUser(authState);
     });
   }
 
