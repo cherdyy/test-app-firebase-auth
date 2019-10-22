@@ -1,15 +1,18 @@
 export class UserData {
-  name: string;
+  displayName: string;
   email: string;
-  avatar: string;
+  photoURL: string;
+  phoneNumber: number;
 
   constructor({
-                name = null,
+                displayName = null,
                 email = null,
-                avatar = null
+                photoURL = null,
+                phoneNumber = null,
   } = {}) {
-    this.name = name;
+    this.displayName = displayName;
     this.email = email;
-    this.avatar = avatar;
+    this.photoURL = photoURL;
+    this.phoneNumber = phoneNumber;
   }
 }
