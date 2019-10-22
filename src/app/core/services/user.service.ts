@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
+import { UserData } from '@shared/models/user-data.model';
+
 
 @Injectable()
 export class UserService {
 
-  constructor() { }
+  private userData: UserData = null;
+
+  constructor() {
+  }
 }
