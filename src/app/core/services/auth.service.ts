@@ -4,22 +4,13 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import AuthProvider = firebase.auth.AuthProvider;
 import * as firebase from 'firebase';
 import { Observable } from 'rxjs';
+import { tap } from "rxjs/operators";
 
 @Injectable()
 export class AuthService {
 
-  public authState: firebase.User = null;
-
   constructor(private user: UserService,
               private afAuth: AngularFireAuth) {
-    this.authStateWatcher();
-  }
-
-  private authStateWatcher(): void {
-    this.afAuth.authState.subscribe((authState) => {
-      this.authState = authState;
-      this.user.setUser(authState);
-    });
   }
 
   private socialSignIn(provider: AuthProvider): Observable<firebase.auth.UserCredential> {
@@ -28,6 +19,19 @@ export class AuthService {
         .then(response => subscriber.next(response))
         .catch(error => subscriber.error(error));
     });
+  }
+
+  public authStateObservable(): Observable<firebase.User> {
+    return this.afAuth.authState
+      .pipe(
+        tap(response => {
+          this.user.setUser(response);
+
+          if(response) {
+            this.user.getUserInfo().subscribe();
+          }
+        })
+      )
   }
 
   public googleLogin(): Observable<firebase.auth.UserCredential> {
@@ -45,12 +49,19 @@ export class AuthService {
     return this.socialSignIn(provider);
   }
 
-  public registerWithLoginAndPassword({displayName, login, password}): Observable<firebase.auth.UserCredential> {
-    return new Observable(subscriber => {
-      this.afAuth.auth.createUserWithEmailAndPassword(login, password)
+  public registerWithLoginAndPassword({ displayName, email, password }): Observable<firebase.auth.UserCredential> {
+    return new Observable<firebase.auth.UserCredential>(subscriber => {
+      this.afAuth.auth.createUserWithEmailAndPassword(email, password)
         .then(response => subscriber.next(response))
         .catch(error => subscriber.error(error));
-    });
+    }).pipe(
+        tap((response) => {
+          this.user.setUser(response.user);
+          this.user
+            .setUserInfo({ displayName })
+            .subscribe();
+        })
+      )
   }
 
   public logout(): Observable<void> {
@@ -61,10 +72,6 @@ export class AuthService {
         })
         .catch(error => subscriber.error(error));
     });
-  }
-
-  get authenticated(): boolean {
-    return this.authState !== null;
   }
 
 }

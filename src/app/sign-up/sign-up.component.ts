@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@core/services/auth.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-sign-up',
@@ -12,7 +13,8 @@ export class SignUpComponent implements OnInit {
   public form: FormGroup;
 
   constructor(private auth: AuthService,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private router: Router) {
     this.initForm();
   }
 
@@ -38,9 +40,18 @@ export class SignUpComponent implements OnInit {
     })
   }
 
-  public signUp() {
+  public signUp(): void {
     if(this.form.invalid) return;
 
+    this.auth
+      .registerWithLoginAndPassword(this.form.value)
+      .subscribe((response) => {
+        this.navigateToProfile(response.user.uid);
+      })
+  }
+
+  private navigateToProfile(uid: string): void {
+    this.router.navigate([uid])
   }
 
 }

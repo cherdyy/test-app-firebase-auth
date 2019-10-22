@@ -3,13 +3,13 @@
     <mat-form-field>
       <input matInput
              formControlName="displayName"
-             placeholder="NickName"
+             placeholder="Nickname"
       >
       <mat-hint>
-        Write NickName!
+        Write Nickname!
       </mat-hint>
       <mat-error>
-        Please enter a valid nickName
+        Please enter a valid nickname
       </mat-error>
     </mat-form-field>
 
@@ -39,7 +39,10 @@
       </mat-error>
     </mat-form-field>
 
-    <button mat-raised-button color="primary">
+    <button (click)="signUp()"
+            mat-raised-button
+            color="primary"
+    >
       Sign Up
     </button>
   </mat-card>

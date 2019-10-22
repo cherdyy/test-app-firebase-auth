@@ -15,10 +15,18 @@ export class NotAuthentificatedGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    if(this.auth.authenticated) {
-      this.router.navigate(['/auth/sign-up']);
-    } else {
-      return true;
-    }
+
+    return new Observable<boolean>(subscriber => {
+      this.auth
+        .authStateObservable()
+        .subscribe((response) => {
+            if(response) {
+              subscriber.next(false);
+            } else {
+              subscriber.next(true);
+            }
+          },
+          error => subscriber.next(false))
+    })
   }
 }

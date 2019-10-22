@@ -17,7 +17,7 @@ export class UserService {
 
   }
 
-  public setUser(user: firebase.User) {
+  public setUser(user: firebase.User): void {
     this.authUser = user;
   }
 
@@ -29,17 +29,34 @@ export class UserService {
       .get()
       .pipe(
         take(1),
-        tap((response) => this.userData = new UserData(response.data()))
+        tap((response) => {
+          this.userData = new UserData(response.data());
+
+          this.setUserInfo(response.data()).subscribe();
+        })
       );
   }
 
-  public setUserInfo(): Observable<void> {
+  public setUserInfo(data: Object): Observable<void> {
+    const collection = this.db.collection('users');
+    const userData = new UserData(data);
+
+    return new Observable(subscriber => {
+      collection
+        .doc(this.authUser.uid)
+        .set({ ...userData })
+        .then(response => subscriber.next(response))
+        .catch(error => subscriber.error(error));
+    });
+  }
+
+  public updateUserInfo(): Observable<void> {
     const collection = this.db.collection('users');
 
     return new Observable(subscriber => {
       collection
         .doc(this.authUser.uid)
-        .set({ ...this.userData })
+        .update({ ...this.userData })
         .then(response => subscriber.next(response))
         .catch(error => subscriber.error(error));
     });
