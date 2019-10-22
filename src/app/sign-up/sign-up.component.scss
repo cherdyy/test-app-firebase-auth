@@ -41,4 +41,17 @@
     width: 30vw;
   }
 
+  .already-signed-up {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: dodgerblue;
+    margin-top: 15px;
+    text-decoration: none;
+
+    mat-icon {
+      margin-left: 5px;
+    }
+  }
+
 }

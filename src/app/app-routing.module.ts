@@ -2,12 +2,15 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { WrapperComponent } from "@core/layouts/wrapper/wrapper.component";
 import { AuthComponent } from "@core/layouts/auth/auth.component";
+import { AuthentificatedGuard } from "@shared/services/authentificated.guard";
+import { NotAuthentificatedGuard } from "@shared/services/not-authentificated.guard";
 
 const routes: Routes = [
   {
     path: '',
     component: WrapperComponent,
     canActivate: [
+      AuthentificatedGuard
     ],
     children: [
       { path: ':nickname', loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule) }
@@ -17,6 +20,7 @@ const routes: Routes = [
     path: 'auth',
     component: AuthComponent,
     canActivate: [
+      NotAuthentificatedGuard
     ],
     children: [
       { path: 'sign-up', loadChildren: () => import('./sign-up/sign-up.module').then(m => m.SignUpModule) },
@@ -27,7 +31,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [AuthentificatedGuard, NotAuthentificatedGuard]
 })
 
 export class AppRoutingModule {

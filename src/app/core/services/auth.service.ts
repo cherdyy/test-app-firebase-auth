@@ -40,7 +40,12 @@ export class AuthService {
     return this.socialSignIn(provider);
   }
 
-  public registerWithLoginAndPassword(login: string, password: string): Observable<firebase.auth.UserCredential> {
+  public gitHubLogin(): Observable<firebase.auth.UserCredential> {
+    const provider = new firebase.auth.GithubAuthProvider();
+    return this.socialSignIn(provider);
+  }
+
+  public registerWithLoginAndPassword({displayName, login, password}): Observable<firebase.auth.UserCredential> {
     return new Observable(subscriber => {
       this.afAuth.auth.createUserWithEmailAndPassword(login, password)
         .then(response => subscriber.next(response))

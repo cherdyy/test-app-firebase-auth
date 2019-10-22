@@ -1,7 +1,10 @@
-<section class="sign-up">
+<section [formGroup]="form" class="sign-up">
   <mat-card class="form">
     <mat-form-field>
-      <input matInput placeholder="NickName">
+      <input matInput
+             formControlName="displayName"
+             placeholder="NickName"
+      >
       <mat-hint>
         Write NickName!
       </mat-hint>
@@ -11,7 +14,10 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="Email">
+      <input matInput
+             formControlName="email"
+             placeholder="Email"
+      >
       <mat-hint>
         Write Email!
       </mat-hint>
@@ -21,7 +27,10 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="Password">
+      <input matInput
+             formControlName="password"
+             placeholder="Password"
+      >
       <mat-hint>
         Write Password!
       </mat-hint>
@@ -46,4 +55,11 @@
       <img src="assets/auth/github-logo.svg" alt="">
     </a>
   </mat-card>
+
+  <a class="already-signed-up" routerLink="/auth/sign-in">
+    Have already account?
+    <mat-icon>
+      assignment_ind
+    </mat-icon>
+  </a>
 </section>
