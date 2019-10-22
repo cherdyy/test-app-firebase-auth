@@ -57,9 +57,8 @@ export class AuthService {
     }).pipe(
         tap((response) => {
           this.user.setUser(response.user);
-          this.user
-            .setUserInfo({ displayName })
-            .subscribe();
+
+          this.user.setUserInfo({ displayName });
         })
       )
   }

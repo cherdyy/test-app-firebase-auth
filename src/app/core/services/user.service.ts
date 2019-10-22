@@ -32,22 +32,18 @@ export class UserService {
         tap((response) => {
           this.userData = new UserData(response.data());
 
-          this.setUserInfo(response.data()).subscribe();
+          this.setUserInfo(response.data());
         })
       );
   }
 
-  public setUserInfo(data: Object): Observable<void> {
+  public setUserInfo(data: Object) {
     const collection = this.db.collection('users');
     const userData = new UserData(data);
 
-    return new Observable(subscriber => {
-      collection
-        .doc(this.authUser.uid)
-        .set({ ...userData })
-        .then(response => subscriber.next(response))
-        .catch(error => subscriber.error(error));
-    });
+    collection
+      .doc(this.authUser.uid)
+      .set({ ...userData })
   }
 
   public updateUserInfo(): Observable<void> {
