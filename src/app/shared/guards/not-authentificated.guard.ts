@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService } from "@core/services/auth.service";
+import { AuthService } from '@core/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,8 @@ import { AuthService } from "@core/services/auth.service";
 export class NotAuthentificatedGuard implements CanActivate {
 
   constructor(private auth: AuthService,
-              private router: Router) {}
+              private router: Router) {
+  }
 
 
   canActivate(
@@ -20,13 +21,13 @@ export class NotAuthentificatedGuard implements CanActivate {
       this.auth
         .authStateObservable()
         .subscribe((response) => {
-            if(response) {
+            if (response) {
               subscriber.next(false);
             } else {
               subscriber.next(true);
             }
           },
-          error => subscriber.next(false))
-    })
+          error => subscriber.next(false));
+    });
   }
 }

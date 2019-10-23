@@ -53,12 +53,18 @@ export class AuthService {
     });
   }
 
+  public loginWithLoginAndPassword({email, password}): Observable<firebase.auth.UserCredential> {
+    return new Observable(subscriber => {
+      this.afAuth.auth.signInWithEmailAndPassword(email, password)
+        .then(response => subscriber.next(response))
+        .catch(error => subscriber.error(error));
+    });
+  }
+
   public logout(): Observable<void> {
     return new Observable(subscriber => {
       this.afAuth.auth.signOut()
-        .then(response => {
-          subscriber.next(response);
-        })
+        .then(response => subscriber.next(response))
         .catch(error => subscriber.error(error));
     });
   }

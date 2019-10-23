@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@core/services/auth.service';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -37,21 +37,23 @@ export class SignUpComponent implements OnInit {
         Validators.required,
         Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/),
       ]),
-    })
+    });
   }
 
   public signUp(): void {
-    if(this.form.invalid) return;
+    if (this.form.invalid) {
+      return;
+    }
 
     this.auth
       .registerWithLoginAndPassword(this.form.value)
       .subscribe((response) => {
         this.navigateToProfile(response.user.uid);
-      })
+      });
   }
 
   private navigateToProfile(uid: string): void {
-    this.router.navigate([uid])
+    this.router.navigate([uid]);
   }
 
 }

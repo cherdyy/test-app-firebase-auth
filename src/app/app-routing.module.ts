@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { WrapperComponent } from "@core/layouts/wrapper/wrapper.component";
-import { AuthComponent } from "@core/layouts/auth/auth.component";
-import { AuthentificatedGuard } from "@shared/services/authentificated.guard";
-import { NotAuthentificatedGuard } from "@shared/services/not-authentificated.guard";
+import { WrapperComponent } from '@core/layouts/wrapper/wrapper.component';
+import { AuthComponent } from '@core/layouts/auth/auth.component';
+import { AuthentificatedGuard } from '@shared/guards/authentificated.guard';
+import { NotAuthentificatedGuard } from '@shared/guards/not-authentificated.guard';
+
 
 const routes: Routes = [
   {
@@ -13,7 +14,7 @@ const routes: Routes = [
       AuthentificatedGuard
     ],
     children: [
-      { path: ':nickname', loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule) }
+      {path: ':nickname', loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule)}
     ]
   },
   {
@@ -23,8 +24,8 @@ const routes: Routes = [
       NotAuthentificatedGuard
     ],
     children: [
-      { path: 'sign-up', loadChildren: () => import('./sign-up/sign-up.module').then(m => m.SignUpModule) },
-      { path: 'sign-in', loadChildren: () => import('./sign-in/sign-in.module').then(m => m.SignInModule) },
+      {path: 'sign-up', loadChildren: () => import('./sign-up/sign-up.module').then(m => m.SignUpModule)},
+      {path: 'sign-in', loadChildren: () => import('./sign-in/sign-in.module').then(m => m.SignInModule)},
     ]
   },
 ];
