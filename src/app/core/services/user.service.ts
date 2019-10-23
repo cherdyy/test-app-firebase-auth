@@ -43,7 +43,7 @@ export class UserService {
 
     collection
       .doc(this.authUser.uid)
-      .set({ ...userData })
+      .set({...userData});
   }
 
   public updateUserInfo(): Observable<void> {
@@ -52,7 +52,7 @@ export class UserService {
     return new Observable(subscriber => {
       collection
         .doc(this.authUser.uid)
-        .update({ ...this.userData })
+        .update({...this.userData})
         .then(response => subscriber.next(response))
         .catch(error => subscriber.error(error));
     });

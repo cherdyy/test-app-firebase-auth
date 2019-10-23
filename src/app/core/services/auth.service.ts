@@ -4,7 +4,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import AuthProvider = firebase.auth.AuthProvider;
 import * as firebase from 'firebase';
 import { Observable } from 'rxjs';
-import { tap } from "rxjs/operators";
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
@@ -26,12 +26,8 @@ export class AuthService {
       .pipe(
         tap(response => {
           this.user.setUser(response);
-
-          if(response) {
-            this.user.getUserInfo().subscribe();
-          }
         })
-      )
+      );
   }
 
   public googleLogin(): Observable<firebase.auth.UserCredential> {
@@ -49,18 +45,12 @@ export class AuthService {
     return this.socialSignIn(provider);
   }
 
-  public registerWithLoginAndPassword({ displayName, email, password }): Observable<firebase.auth.UserCredential> {
-    return new Observable<firebase.auth.UserCredential>(subscriber => {
+  public registerWithLoginAndPassword({displayName, email, password}): Observable<firebase.auth.UserCredential> {
+    return new Observable(subscriber => {
       this.afAuth.auth.createUserWithEmailAndPassword(email, password)
         .then(response => subscriber.next(response))
         .catch(error => subscriber.error(error));
-    }).pipe(
-        tap((response) => {
-          this.user.setUser(response.user);
-
-          this.user.setUserInfo({ displayName });
-        })
-      )
+    });
   }
 
   public logout(): Observable<void> {
