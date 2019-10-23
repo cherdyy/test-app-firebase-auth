@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '@core/services/auth.service';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss']
 })
-export class SignInComponent implements OnInit {
+export class SignInComponent implements OnInit, OnDestroy {
+  private unsubscriber$: Subject<any> = new Subject();
 
   public form: FormGroup;
 
@@ -40,11 +43,14 @@ export class SignInComponent implements OnInit {
     }
 
     this.auth.loginWithLoginAndPassword(this.form.value)
+      .pipe(
+        takeUntil(this.unsubscriber$)
+      )
       .subscribe((response) => {
-        this.navigateToProfile(response.user.uid);
+          this.navigateToProfile(response.user.uid);
         },
         error => {
-        // :TODO
+          // :TODO
         });
   }
 
@@ -52,4 +58,8 @@ export class SignInComponent implements OnInit {
     this.router.navigate([uid]);
   }
 
+  ngOnDestroy() {
+    this.unsubscriber$.next();
+    this.unsubscriber$.complete();
+  }
 }

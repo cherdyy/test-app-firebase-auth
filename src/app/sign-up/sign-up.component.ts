@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '@core/services/auth.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.scss']
 })
-export class SignUpComponent implements OnInit {
+export class SignUpComponent implements OnInit, OnDestroy {
+  private unsubscriber$: Subject<any> = new Subject();
 
   public form: FormGroup;
 
@@ -49,11 +51,18 @@ export class SignUpComponent implements OnInit {
       .registerWithLoginAndPassword(this.form.value)
       .subscribe((response) => {
         this.navigateToProfile(response.user.uid);
-      });
+      },
+        error => {
+          // :TODO
+        });
   }
 
   private navigateToProfile(uid: string): void {
     this.router.navigate([uid]);
   }
 
+  ngOnDestroy() {
+    this.unsubscriber$.next();
+    this.unsubscriber$.complete();
+  }
 }
