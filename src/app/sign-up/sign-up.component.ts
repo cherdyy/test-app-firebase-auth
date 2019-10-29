@@ -1,22 +1,24 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, Self } from '@angular/core';
 import { AuthService } from '@core/services/auth.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { UnsubscribeService } from '@shared/services/unsubscribe.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.scss']
+  styleUrls: ['./sign-up.component.scss'],
+  providers: [UnsubscribeService]
 })
-export class SignUpComponent implements OnInit, OnDestroy {
-  private unsubscriber$: Subject<any> = new Subject();
+export class SignUpComponent implements OnInit {
 
   public form: FormGroup;
 
   constructor(private auth: AuthService,
               private fb: FormBuilder,
-              private router: Router) {
+              private router: Router,
+              @Self() private $unsubscribe: UnsubscribeService) {
     this.initForm();
   }
 
@@ -49,6 +51,9 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
     this.auth
       .registerWithLoginAndPassword(this.form.value)
+      .pipe(
+        takeUntil(this.$unsubscribe)
+      )
       .subscribe((response) => {
         this.navigateToProfile(response.user.uid);
       },
@@ -59,10 +64,5 @@ export class SignUpComponent implements OnInit, OnDestroy {
 
   private navigateToProfile(uid: string): void {
     this.router.navigate([uid]);
-  }
-
-  ngOnDestroy() {
-    this.unsubscriber$.next();
-    this.unsubscriber$.complete();
   }
 }
