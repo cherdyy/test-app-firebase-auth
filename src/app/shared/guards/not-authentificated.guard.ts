@@ -22,6 +22,11 @@ export class NotAuthentificatedGuard implements CanActivate {
         .authStateObservable()
         .subscribe((response) => {
             if (response) {
+              const url = state.url;
+              const uid = String(response.uid);
+
+              this.router.navigate([uid]);
+
               subscriber.next(false);
             } else {
               subscriber.next(true);

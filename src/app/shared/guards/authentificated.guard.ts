@@ -23,9 +23,14 @@ export class AuthentificatedGuard implements CanActivate {
         .authStateObservable()
         .subscribe((response) => {
             if (response) {
+              const url = state.url;
+              const uid = String(response.uid);
+
+              if (url.length <= 1) { this.router.navigate([uid]); }
+
               subscriber.next(true);
             } else {
-              this.router.navigate(['/auth/sign-up']);
+              this.router.navigate(['/auth/sign-in']);
               subscriber.next(false);
             }
           },
