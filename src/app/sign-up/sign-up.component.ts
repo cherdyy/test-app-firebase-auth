@@ -18,7 +18,7 @@ export class SignUpComponent implements OnInit {
   constructor(private auth: AuthService,
               private fb: FormBuilder,
               private router: Router,
-              @Self() private $unsubscribe: UnsubscribeService) {
+              @Self() private unsubscribe$: UnsubscribeService) {
     this.initForm();
   }
 
@@ -52,7 +52,7 @@ export class SignUpComponent implements OnInit {
     this.auth
       .registerWithLoginAndPassword(this.form.value)
       .pipe(
-        takeUntil(this.$unsubscribe)
+        takeUntil(this.unsubscribe$)
       )
       .subscribe((response) => {
         this.navigateToProfile(response.user.uid);
